@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: zelaleizaldeen/auth
+      context: back-end/auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'auth/src/**/*.ts'
+            dest: .
+    - image: zelaleizaldeen/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .

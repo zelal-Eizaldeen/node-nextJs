@@ -21,16 +21,16 @@ import { AuthContext } from '../shared/context/auth-context';
 import MainNavigation from '../shared/components/Navigation/MainNavigation';
 
 const MyApp = ({ Component, pageProps, currentUser }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(false);
   const [userId, setUserId] = useState(false);
 
-  const login = useCallback((uid, token) => {
-    setToken(token);
+  const login = useCallback((uid) => {
+    // setToken(token);
     setUserId(uid);
     localStorage.setItem(
       'userData',
-      JSON.stringify({ userId: uid, token: token })
+      // JSON.stringify({ userId: uid, token: token })
+      JSON.stringify({ userId: uid })
     );
   }, []);
 
@@ -42,7 +42,7 @@ const MyApp = ({ Component, pageProps, currentUser }) => {
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: !!token,
+        isLoggedIn: !!userId,
         token: token,
         userId: userId,
         login: login,

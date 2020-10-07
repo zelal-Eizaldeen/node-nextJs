@@ -72,7 +72,8 @@ const Auth = () => {
           }),
           { 'Content-Type': 'application/json' }
         );
-        auth.login();
+
+        auth.login(response.id, response);
         Router.push('/');
       } catch (err) {}
     } else {
@@ -89,7 +90,7 @@ const Auth = () => {
             'Content-Type': 'application/json',
           }
         );
-        auth.login();
+        auth.login(response.id, response.token);
         Router.push('/');
       } catch (err) {}
     }

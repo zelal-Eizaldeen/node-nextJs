@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Router from 'next/router';
-import {useHttpClient} from '../../shared/hooks/http-hook';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import styles from '../../styles/Auth.module.css';
 import Card from '../../shared/components/UIElements/Card';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
@@ -18,8 +18,8 @@ import { AuthContext } from '../../shared/context/auth-context';
 const Auth = () => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const {isLoading, error, sendRequest, clearError} = useHttpClient();
- 
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
   const [formState, inputHandler, setFormData] = useForm(
     {
       email: {
@@ -60,37 +60,39 @@ const Auth = () => {
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
-   
-    if (isLoginMode) { 
-      try {
-        const responseData = await sendRequest('http://localhost:5000/api/users/login','POST', JSON.stringify({ email: formState.inputs.email.value,
-        password: formState.inputs.password.value
-      }),
-         { 'Content-Type': 'application/json'}
-      
-      );
-      auth.login();
-      Router.push('/');
-      } catch (err) {
 
-      }
-    } else {
-      try { 
-        const response = await sendRequest('http://localhost:5000/api/users/signup', 'POST',JSON.stringify({
-          name: formState.inputs.name.value,
-          email: formState.inputs.email.value,
-          password: formState.inputs.password.value,
-        }), {
-            'Content-Type': 'application/json',
-          },
+    if (isLoginMode) {
+      try {
+        const responseData = await sendRequest(
+          '/api/users/login',
+          'POST',
+          JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+          { 'Content-Type': 'application/json' }
         );
         auth.login();
         Router.push('/');
-      } catch (err) {
-      }
+      } catch (err) {}
+    } else {
+      try {
+        const response = await sendRequest(
+          '/api/users/signup',
+          'POST',
+          JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+          {
+            'Content-Type': 'application/json',
+          }
+        );
+        auth.login();
+        Router.push('/');
+      } catch (err) {}
     }
-
-    
   };
 
   return (

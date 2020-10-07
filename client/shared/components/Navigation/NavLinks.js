@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 import { AuthContext } from '../../context/auth-context';
 
-const NavLinks = (props) => {
+const NavLinks = ({ currentUser }) => {
   const auth = useContext(AuthContext);
-  console.dir(props);
+
   return (
     <ul className="nav-links">
       <li>
@@ -26,6 +26,11 @@ const NavLinks = (props) => {
       {!auth.isLoggedIn && (
         <li>
           <Link href="/auth/signup">AUTHENTICATE</Link>
+        </li>
+      )}
+      {auth.isLoggedIn && (
+        <li>
+          <button onClick={auth.logout}>LOGOUT</button>
         </li>
       )}
     </ul>

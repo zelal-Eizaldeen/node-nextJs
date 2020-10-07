@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import axios from 'axios';
+import buildClient from '../api/build-client';
 import styles from '../styles/Home.module.css';
 
-function Home({ currentUser }) {
+const Home = ({ currentUser }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -17,7 +17,9 @@ function Home({ currentUser }) {
 
         <p className={styles.description}>
           Get started by FLEX{' '}
-          <code className={styles.code}>SHAPE YOUR BODY</code>
+          <code className={styles.code}>
+            {currentUser ? 'You are signed in' : 'You are not signed in'}
+          </code>
         </p>
 
         <div className={styles.grid}>
@@ -61,13 +63,10 @@ function Home({ currentUser }) {
       </footer>
     </div>
   );
-}
-Home.getInitialProps = async () => {
-  if (typeof window === 'undefined') {
-  } else {
-    const { data } = await axios.get('/api/users/currentuser');
-    return data;
-  }
-  return {};
+};
+Home.getInitialProps = async (context) => {
+  const client = buildClient(context);
+  const { data } = await client.get('/api/users/currentuser');
+  return data;
 };
 export default Home;

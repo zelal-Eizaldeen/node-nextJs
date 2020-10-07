@@ -6,7 +6,7 @@ import NavLinks from './NavLinks';
 import SideDrawer from './SideDrawer';
 import Backdrop from '../UIElements/Backdrop';
 
-const MainNavigation = (props) => {
+const MainNavigation = ({ currentUser }) => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
 
   const openDrawerHandler = () => {
@@ -39,7 +39,7 @@ const MainNavigation = (props) => {
           <Link href="/">YourPrograms</Link>
         </h1>
         <nav className="main-navigation__header-nav">
-          <NavLinks />
+          <NavLinks currentUser={currentUser} />
         </nav>
       </MainHeader>
     </React.Fragment>

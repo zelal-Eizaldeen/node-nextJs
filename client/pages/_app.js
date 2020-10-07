@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import buildClient from '../api/build-client';
 import '../styles/globals.css';
 import '../shared/components/FormElements/Button.css';
 import '../shared/components/FormElements/Input.css';
@@ -19,27 +20,53 @@ import '../pages/programs/newProgram.css';
 import { AuthContext } from '../shared/context/auth-context';
 import MainNavigation from '../shared/components/Navigation/MainNavigation';
 
-function MyApp({ Component, pageProps }) {
+const MyApp = ({ Component, pageProps, currentUser }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(false);
+  const [userId, setUserId] = useState(false);
 
-  const login = useCallback(() => {
-    setIsLoggedIn(true);
+  const login = useCallback((uid, token) => {
+    setToken(token);
+    setUserId(uid);
+    localStorage.setItem(
+      'userData',
+      JSON.stringify({ userId: uid, token: token })
+    );
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false);
+    setToken(null);
+    setUserId(null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}
     >
       <main>
-        <MainNavigation />
+        <MainNavigation currentUser={currentUser} />
         <Component {...pageProps} />
       </main>
     </AuthContext.Provider>
   );
-}
+};
+MyApp.getInitialProps = async (appContext) => {
+  const client = buildClient(appContext.ctx);
+  const { data } = await client.get('/api/users/currentuser');
+  let pageProps;
+  if (appContext.Component.getInitialProps) {
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+  }
 
+  return {
+    pageProps,
+    ...data,
+  };
+};
 export default MyApp;
